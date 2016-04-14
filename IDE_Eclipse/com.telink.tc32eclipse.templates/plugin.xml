@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Sample Wizards"
+            id="com.telink.tc32eclipse.templates">
+      </category>
+      <wizard
+            name="Multi-page Editor file"
+            icon="icons/sample.gif"
+            category="com.telink.tc32eclipse.templates"
+            class="com.telink.tc32eclipse.templates.ui.wizards.SampleNewWizard"
+            id="com.telink.tc32eclipse.templates.ui.wizards.SampleNewWizard">
+      </wizard>
+   </extension>
+
+</plugin>

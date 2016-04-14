@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.telink.tc32eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="com.telink.tc32eclipse.core" id="TC32 GCC bundle" name="TC32 GCC Toolchain Binaries Bundle"/>
+      </appInfo>
+      <documentation>
+         An extension point to register tc32-elf-tcctoolchain binaries bundles.
+&lt;p&gt;The TC32 GCC toolchain is available for most platforms, however, especially on Linux and MacOSX, these toolchains are often out of date or incomplete.&lt;/p&gt;
+&lt;p&gt;This extension point allows ISV to bundle a current TC32 GCC toolchain for use in the TC32 Eclipse Plugin.&lt;/p&gt;
+
+&lt;b&gt;Note:&lt;/b&gt; this extension point does not specify any architecture or operating system. Use the bundle manifest to limit the bundled toolchain to certain operating systems or platforms.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="TC32 gcc"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="TC32 gcc">
+      <complexType>
+         <sequence>
+            <element ref="path" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique id of the bundled toolchain. The TC32 Eclipse plugin uses this internally to differentiate between multiple toolch
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The human readable name of the toolchain. This is presented to the user in the user interface and should include the version number or date to differentiate the versions.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="path">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name must match one of the options from the &lt;code&gt;com.telink.tc32eclipse.core.paths.TC32Path&lt;/code&gt; enum.
+Any other name will be ignored.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  The path, relative to the bundle root.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         See &lt;code&gt;com.telink.tc32eclipse.core.paths.TC32Path&lt;/code&gt; for a list of currently supported paths.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         2.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Example extension for a TC32Win based toolchain bundle.
+
+&lt;pre&gt;
+&lt;extension point=&quot;com.telink.tc32eclipse.TC32gccbundle&quot;&gt;
+ &lt;TC32gcc
+  id=&quot;sample.TC32gcc.TC32Win&quot;
+  name=&quot;TC32Win 20070525&quot; &gt;
+  &lt;path name=&quot;TC32GCC&quot; value=&quot;TC32Win/bin&quot; /&gt;
+  &lt;path name=&quot;TC32INCLUDE&quot; value=&quot;TC32Win/TC32/include&quot; /&gt;
+  &lt;path name=&quot;TC32DUDE&quot; value=&quot;TC32Win/bin&quot; /&gt;
+  &lt;path name=&quot;TC32DUDECONF&quot; value=&quot;TC32Win/bin&quot; /&gt;
+  &lt;path name=&quot;MAKE&quot; value=&quot;TC32Win/utils/bin&quot; /&gt;
+ &lt;/TC32gcc&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2008 Peter Shieh  and others
+
+This program and the accompanying materials are made
+available under the terms of the GNU Public License v3
+which accompanies this distribution, and is available at
+http://www.gnu.org/licenses/gpl.html
+      </documentation>
+   </annotation>
+
+</schema>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.3"?>
+<plugin>
+<!-- 
+####################################################################################### 
+####################################################################################### 
+##                                                                                   ##
+##   Extension Points                                                                ## 
+##                                                                                   ##
+####################################################################################### 
+####################################################################################### 
+-->
+
+
+
+####################################################################################### 
+####################################################################################### 
+##                                                                                   ##
+##   User Interface                                                                  ## 
+##                                                                                   ##
+####################################################################################### 
+####################################################################################### 
+-->
+<!--
+####################################################################################### 
+#    Preference Initializer                                                           # 
+####################################################################################### 
+-->
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="com.telink.tc32eclipse.core.preferences.PreferenceInitializer">
+		</initializer>
+	</extension>
+
+
+<!--
+####################################################################################### 
+#    TC32 Plugin Commands                                                             # 
+####################################################################################### 
+-->
+	<extension point="org.eclipse.ui.commands">
+		<category
+			name="Telink Toolset"
+			description="Telink Toolset"
+			id="com.telink.tc32eclipse.commands" />
+		<command
+		
+        categoryId="com.telink.tc32eclipse.commands"
+        defaultHandler="com.telink.tc32eclipse.ui.commands.RunTCDB"
+        description="Telink Binary Loader"
+        id="com.telink.tc32eclipse.commands.tcdb"
+        name="Telink Progammer">
+        <commandParameter id="z.ex.dropdown.msg" name="Message" optional="true">
+             </commandParameter>
+        </command>
+	</extension>
+
+<!--
+####################################################################################### 
+#    Key Bindings                                                                     # 
+####################################################################################### 
+-->
+
+
+<!--
+####################################################################################### 
+#    Action Sets (Toolbar & Main Menu)                                                # 
+####################################################################################### 
+##	<extension point="org.eclipse.ui.actionSets">
+        visible="true">
+-->
+
+<extension point="org.eclipse.ui.menus">
+	<menuContribution
+       allPopups="false"
+       locationURI="toolbar:org.eclipse.ui.main.toolbar"> 
+	    <toolbar 
+	         id="com.telink.tc32eclipse.commands.toolbar1"> 
+	      <command
+             commandId="com.telink.tc32eclipse.commands.tcdb"
+             icon="icons/flash64.png"
+             id="com.telink.tc32eclipse.commands.tool_tcdb"
+             style="pulldown" >              
+	      </command>
+	   </toolbar>
+	</menuContribution>
+	<menuContribution
+       allPopups="false"
+       locationURI="menu:com.telink.tc32eclipse.commands.tool_tcdb"> 
+	     <command
+            commandId="com.telink.tc32eclipse.commands.tcdb"
+            icon="icons/tc32_app.png"
+            id="com.telink.tc32eclipse.commands.Delpair"
+            label="Delete pair"
+            style="push"> 
+             <parameter name="z.ex.dropdown.msg" value="wf 70000 -s 16k -e">
+             </parameter>
+	     </command>
+	     <command
+            commandId="com.telink.tc32eclipse.commands.tcdb"
+            icon="icons/wt.gif"
+            id="com.telink.tc32eclipse.commands.FactoryReset"
+            label="Clean 512k"
+            style="push"> 
+             <parameter name="z.ex.dropdown.msg" value="wf 0 -s 512k -e">
+             </parameter>
+	     </command>	   
+	     <command
+            commandId="com.telink.tc32eclipse.commands.tcdb"
+            icon="icons/bugs3.png"
+            id="com.telink.tc32eclipse.commands.UseInput"
+            label="Advanced..."
+            style="push"> 
+             <parameter name="z.ex.dropdown.msg" value="advanced">
+             </parameter>
+	     </command>	
+	</menuContribution>
+ <menuContribution
+       allPopups="false"
+       locationURI="menu:org.eclipse.ui.main.menu">
+    <menu         
+          label="Telink">
+       <command
+             commandId="com.telink.tc32eclipse.commands.tcdb"
+             icon="icons/flash64.png"
+             label="Telink Binary Loader"
+             style="push"
+             tooltip="Telink Binary Loader">
+       </command> 
+      
+       
+<!---	   
+       <command
+             commandId="com.telink.tc32eclipse.commands.wtcdb"
+             icon="icons/wt.gif"
+             label="Telink WTCDB"
+             style="push"
+             tooltip="Telink Tool Center">
+       </command>
+       <command
+             commandId="com.telink.tc32eclipse.commands.tdebug"
+             icon="icons/bugs3.png"
+             label="Telink Debugger"
+             style="push"
+             tooltip="Telink Debugger">
+       </command>
+       <command
+             commandId="com.telink.tc32eclipse.commands.rfscan"
+             icon="icons/tc32_app.png"
+             label="Telink RF Scanner"
+             style="push"
+             tooltip="Telink RF Scanner">
+       </command>
+       <command
+             commandId="com.telink.tc32eclipse.commands.gpiocfg"
+             icon="icons/tc.gif"
+             label="Telink GPIO Config"
+             style="push"
+             tooltip="Telink GPIO Config">
+       </command>
+-->       
+    </menu>
+ </menuContribution>
+</extension>
+
+
+	
+<!-- make this as default C perspective 
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension
+			targetID="org.eclipse.cdt.ui.CPerspective">
+			<actionSet id="com.telink.tc32eclipse.actionset.tcdb" />
+		</perspectiveExtension>
+		
+	</extension>
+-->
+   	
+<!--
+####################################################################################### 
+#    Popup Menues (Context Menues)                                                    # 
+####################################################################################### 
+
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			objectClass="org.eclipse.core.resources.IProject"
+			adaptable="true"
+			id="com.telink.tc32eclipse.menu.popup.tcdb">
+			<menu
+             icon="icons/tc32_app.png"
+             id="com.telink.tc32eclipse.menu.popup.tcdb"
+             label="Telink Loader">
+			 <separator name="tcdb"></separator>
+			</menu>
+			<action
+				class="com.telink.tc32eclipse.ui.commands.TCDBProjectAction"
+				enablesFor="1" id="com.telink.tc32eclipse.actions.projectupload"
+				label="Download binary to Telink device."
+				menubarPath="com.telink.tc32eclipse.menu.popup.TC32/download">
+			</action>
+			<visibility>
+				<objectState name="projectNature"
+					value="com.telink.tc32eclipse.core.TC32nature">
+				</objectState>
+			</visibility>
+		</objectContribution>
+	</extension>
+-->
+
+<!--
+####################################################################################### 
+#    Preference Pages                                                                 # 
+####################################################################################### 
+-->
+	<extension point="org.eclipse.ui.preferencePages">
+		<page name="Telink Tools"
+			class="com.telink.tc32eclipse.ui.preferences.MainPreferencePage"
+			id="com.telink.tc32eclipse.preferences.PreferencePage">
+		</page>
+		<page name="Toolchain Paths"
+			category="com.telink.tc32eclipse.preferences.PreferencePage"
+			class="com.telink.tc32eclipse.ui.preferences.PathsPreferencePage"
+			id="com.telink.tc32eclipse.preferences.PathsPreferencePage">
+		</page>
+		<page name="Telink Loader"
+			category="com.telink.tc32eclipse.preferences.PreferencePage"
+			class="com.telink.tc32eclipse.ui.preferences.TCDBPreferencePage"
+			id="com.telink.tc32eclipse.preferences.TCDBPreferencePage">
+		</page>
+	</extension>
+
+
+## turn back on
+####################################################################################### 
+#    Property Pages                                                                   # 
+####################################################################################### 
+	<extension point="org.eclipse.ui.propertyPages">
+		<!-- ############################### -->
+		<!-- Main Telink Tools  Properties Page       -->
+		<!-- ############################### -->
+		<page
+            class="com.telink.tc32eclipse.ui.propertypages.PageMain"
+            id="com.telink.tc32eclipse.propertypage.telinktools"
+            name="Telink Tools" >
+			<filter
+				name="projectNature"
+				value="com.telink.tc32eclipse.core.TC32nature">
+			</filter>            
+			<enabledWhen>
+				<or>
+					<instanceof value="org.eclipse.core.resources.IProject"/>
+					<instanceof value="org.eclipse.cdt.core.model.ICProject"/>
+				</or>          
+			</enabledWhen>
+        </page>      
+
+		<!-- ############################### -->
+		<!-- Telink TCDB Loader Properties Page         -->
+		<!-- ############################### -->
+		<page
+            class="com.telink.tc32eclipse.ui.propertypages.PageTCDB"
+            id="com.telink.tc32eclipse.propertypage.tcdb"
+            name="Telink Loader"
+            category="com.telink.tc32eclipse.propertypage.telinktools" >
+	           
+			<enabledWhen>
+				<and>
+					<or>
+						<instanceof value="org.eclipse.core.resources.IProject"/>
+						<instanceof value="org.eclipse.cdt.core.model.ICProject"/>
+					</or> 
+					<!-- not> -->
+					<!-- 	<test property="com.telink.tc32eclipse.core.isStaticLib" /> -->
+					<!-- </not> -->
+				</and>         
+			</enabledWhen>
+        </page>    
+		<!-- 
+		<page
+            class="com.telink.tc32eclipse.ui.propertypages.PageTCDBStaticLib"
+            id="com.telink.tc32eclipse.propertypage.tcdb.staticlib"
+            name="TC32Tools"
+            category="com.telink.tc32eclipse.propertypage.TC32main" >
+			<filter
+				name="projectNature"
+				value="com.telink.tc32eclipse.core.TC32nature">
+			</filter>            
+			<enabledWhen>
+				<and>
+					<or>
+						<instanceof value="org.eclipse.core.resources.IProject"/>
+						<instanceof value="org.eclipse.cdt.core.model.ICProject"/>
+					</or> 
+					<test property="com.telink.tc32eclipse.core.isStaticLib" />
+				</and>         
+			</enabledWhen>
+        </page>    
+		-->
+	</extension>
+	
+	
+<!--
+####################################################################################### 
+#    Property Page Tabs                                                               # 
+####################################################################################### 
+-->
+	<extension
+		point="org.eclipse.cdt.ui.cPropertyTab">
+		
+
+		<!-- #### TCDB/Avanced Tab #### -->
+		<tab
+			class="com.telink.tc32eclipse.ui.propertypages.TabTCDBAdvanced"
+			icon="icons/tc.gif"
+			name="Loader Options"
+			weight="005"
+			parent="com.telink.tc32eclipse.ui.propertypages.PageTCDB"/>
+	</extension>
+
+
+
+<!--
+####################################################################################### 
+#    Views                                                                            # 
+####################################################################################### 
+--> 
+
+
+</plugin>

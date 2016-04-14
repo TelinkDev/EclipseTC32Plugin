@@ -1,0 +1,1211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.3"?>
+<plugin>
+
+
+<!--
+####################################################################################### 
+#    ScannerConfigurationDiscoveryProfiles                                            # 
+####################################################################################### 
+
+
+	<extension point="org.eclipse.cdt.make.core.ScannerConfigurationDiscoveryProfile"
+		id="com.telink.tc32eclipse.core.TC32GCCManagedMakePerProjectProfileC"
+		name="TC32-GCC managed project profile (C)">
+		<scannerInfoCollector
+            class="com.telink.tc32eclipse.mbs.scannerconfig.TC32GCCScannerInfoCollector"
+            scope="project"/>
+		<buildOutputProvider>
+			<open/>
+			<scannerInfoConsoleParser 
+				class="com.telink.tc32eclipse.mbs.scannerconfig.TC32GCCScannerInfoConsoleParser"
+				compilerCommands="tc32-elf-gcc" />
+		</buildOutputProvider>
+		<scannerInfoProvider providerId="specsFile">
+			<run
+				arguments="-E -P -v -dD ${plugin_state_location}/specs.c"
+				command="tc32-elf-gcc"
+				class="org.eclipse.cdt.make.internal.core.scannerconfig2.GCCSpecsRunSIProvider"/>
+			<scannerInfoConsoleParser 
+				class="org.eclipse.cdt.make.internal.core.scannerconfig.gnu.GCCSpecsConsoleParser"/>
+		</scannerInfoProvider>
+	</extension>
+
+-->
+
+<!-- 
+####################################################################################### 
+####################################################################################### 
+##                                                                                   ##
+##   BuildDef                                                                        ##
+##                                                                                   ## 
+####################################################################################### 
+####################################################################################### 
+-->
+ 
+	<extension id="com.telink.tc32eclipse.builddef"
+        point="org.eclipse.cdt.managedbuilder.core.buildDefinitions"
+		name="TC32 Build Definitions" >
+		<managedBuildRevision fileVersion="4.0.0" />
+		
+<!--   
+####################################################################################### 
+#    TC32Win Assembler                                                                 # 
+####################################################################################### 
+ -->
+		<tool id="com.telink.tc32eclipse.tool.assembler.TC32Win"
+			command="tc32-elf-gcc" 
+			name="TC32 CC/Assembler" 
+			outputFlag="-c -o"
+			natureFilter="both"
+			errorParsers="org.eclipse.cdt.core.GASErrorParser">
+			
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildType">
+					<value
+						id="org.eclipse.cdt.build.core.buildType.release" />
+					<value
+						id="org.eclipse.cdt.build.core.buildType.debug" />
+				</property>
+			</supportedProperties>			
+
+			<optionCategory owner="com.telink.tc32eclipse.tool.assembler.TC32Win"
+				name="General" id="com.telink.tc32eclipse.asm.category.general" />
+			<option id="com.telink.tc32eclipse.asm.option.warnings.nowarn"
+				name="Suppress warnings (-W)"
+				category="com.telink.tc32eclipse.asm.category.general"
+				valueType="boolean" 
+				defaultValue="false"
+				command="-W" />
+
+			<option id="com.telink.tc32eclipse.assembler.option.xflags"
+				name="(-Xassembler) options"
+				category="com.telink.tc32eclipse.asm.category.general"
+				valueType="stringList"
+				command="-Xassembler" />
+
+			<option id="com.telink.tc32eclipse.asm.option.flags"
+				name="Other GCC Flags"
+				category="com.telink.tc32eclipse.asm.category.general" 
+				valueType="string"  />
+
+			<optionCategory id="com.telink.tc32eclipse.asm.category.paths" 
+				name="Paths" />
+			<option id="com.telink.tc32eclipse.asm.option.include.paths"
+				name="#include paths for preprocessor(-I)"
+				category="com.telink.tc32eclipse.asm.category.paths" 
+				valueType="includePath"
+				browseType="directory"
+				command="-I" />
+			<option id="com.telink.tc32eclipse.asm.option.include.gaspaths"
+				name=".include paths for assembler(-Wa,-I)"
+				category="com.telink.tc32eclipse.asm.category.paths" 
+				valueType="includePath"
+				browseType="directory"
+				command="-Wa,-I" />
+
+			<optionCategory id="com.telink.tc32eclipse.assembler.category.debug" 
+				name="Debugging" />
+			<option id="com.telink.tc32eclipse.assembler.option.debug.level"
+				name="Generate Debugging Info" 
+				category="com.telink.tc32eclipse.assembler.category.debug"
+				valueType="enumerated" >
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value"
+					value="com.telink.tc32eclipse.assembler.option.debug.level.none"
+					extensionAdjustment="false" >
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.release" />
+				</enablement>
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value"
+					value="com.telink.tc32eclipse.assembler.option.debug.level.g2"
+					extensionAdjustment="false" >
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.debug" />
+				</enablement>
+			    <enumeratedOptionValue
+			    	  command=""
+			          id="com.telink.tc32eclipse.assembler.option.debug.level.none"
+			          name="No debugging info" />
+			    <enumeratedOptionValue
+			          command="-g1"
+			          id="com.telink.tc32eclipse.assembler.option.debug.level.g1"
+			          name="Minimal debugging info (-g1)" />
+			    <enumeratedOptionValue
+			          command="-g2"
+			          id="com.telink.tc32eclipse.assembler.option.debug.level.g2"
+			          isDefault="false"
+			          name="Standard debugging info (-g2)" />
+			    <enumeratedOptionValue
+			          command="-g3"
+			          id="com.telink.tc32eclipse.assembler.option.debug.level.g3"
+			          name="Extra debugging info (-g3)" />
+			          
+			    <enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value" 
+					value="com.telink.tc32eclipse.compiler.optimize.three"
+					extensionAdjustment="false">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.release" />
+				</enablement>
+				
+			</option>
+			<option id="com.telink.tc32eclipse.assembler.option.debug.type"
+				name="Debug Info Format" 
+				category="com.telink.tc32eclipse.assembler.category.debug"
+				valueType="enumerated" >
+			    <enumeratedOptionValue
+			          command=""
+			          id="com.telink.tc32eclipse.assembler.option.debug.level.default"
+			          name="Operating System Default" />
+				<enablement 
+					type="UI_ENABLEMENT|CMD_USAGE" >
+					<not>
+						<checkOption
+							optionId="com.telink.tc32eclipse.assembler.option.debug.level"
+					  		value="com.telink.tc32eclipse.assembler.option.debug.level.none" />
+					</not>
+				</enablement>
+
+			</option>
+			
+			
+			<inputType id="com.telink.tc32eclipse.tool.assembler.input"
+				sources="s,S,asm"
+				dependencyContentType="org.eclipse.cdt.core.cHeader"
+				dependencyExtensions="h"/>
+				
+			<outputType id="com.telink.tc32eclipse.tool.assembler.output"
+				outputs="o" 
+				buildVariable="OBJS" />
+		</tool>
+
+
+<!-- 
+####################################################################################### 
+#    TC32-GCC Compiler                                                                  # 
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.compiler.TC32Win" 
+			name="TC32 Compiler" 
+			command="tc32-elf-gcc"
+			errorParsers="org.eclipse.cdt.core.GCCErrorParser"
+			outputFlag="-c -o"
+			natureFilter="both" >
+			
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildType">
+					<value
+						id="org.eclipse.cdt.build.core.buildType.debug" />
+					<value
+						id="org.eclipse.cdt.build.core.buildType.release" />
+				</property>
+			</supportedProperties>
+
+			<envVarBuildPath 
+				pathType="buildpathInclude"
+				variableList="CPATH,C_INCLUDE_PATH" />
+			
+			<optionCategory	id="com.telink.tc32eclipse.compiler.category.directories" 
+				name="Directories" />
+			<option id="com.telink.tc32eclipse.compiler.option.incpath"
+				name="Include Paths (-I)" 
+				category="com.telink.tc32eclipse.compiler.category.directories"
+				valueType="includePath"
+				browseType="directory"
+				command="-I" />
+
+			<optionCategory id="com.telink.tc32eclipse.compiler.category.syms"
+				name="Symbols" >
+			</optionCategory>
+			<option id="com.telink.tc32eclipse.compiler.option.def"
+				name="Define Syms (-D)" 
+				category="com.telink.tc32eclipse.compiler.category.syms"
+				valueType="definedSymbols"
+				command="-D" />
+			<option id="com.telink.tc32eclipse.compiler.option.undef"
+				name="Undefine Syms (-U)"
+				category="com.telink.tc32eclipse.compiler.category.syms"
+				valueType="undefDefinedSymbols"
+				command="-U" />
+
+			<optionCategory id="com.telink.tc32eclipse.compiler.category.warnings"
+				name="Warnings" />
+			<option id="com.telink.tc32eclipse.compiler.option.nowarn" 
+				name="No Warnings (-w)" 
+				category="com.telink.tc32eclipse.compiler.category.warnings"
+				valueType="boolean"
+				defaultValue="false"
+				command="-w" />
+			<option id="com.telink.tc32eclipse.compiler.option.allwarn" 
+				name="All Warnings (-Wall)"
+				category="com.telink.tc32eclipse.compiler.category.warnings"
+				valueType="boolean"
+				defaultValue="true"
+				command="-Wall" />
+			<option id="com.telink.tc32eclipse.compiler.option.warnerr" 
+				name="Warnings as Errors (-Werror)"
+				category="com.telink.tc32eclipse.compiler.category.warnings"
+				valueType="boolean"
+				defaultValue="false"
+				command="-Werror" />
+				
+			<optionCategory id="com.telink.tc32eclipse.compiler.category.debug" 
+				name="Debugging" />
+			<option id="com.telink.tc32eclipse.compiler.option.debug.level"
+				name="Generate Debugging Info" 
+				category="com.telink.tc32eclipse.compiler.category.debug"
+				valueType="enumerated" >
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value"
+					value="com.telink.tc32eclipse.compiler.option.debug.level.none"
+					extensionAdjustment="false" >
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.release" />
+				</enablement>
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value"
+					value="com.telink.tc32eclipse.compiler.option.debug.level.g2"
+					extensionAdjustment="false" >
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.debug" />
+				</enablement>
+			    <enumeratedOptionValue
+			    	  command=""
+			          id="com.telink.tc32eclipse.compiler.option.debug.level.none"
+			          name="No debugging info" />
+			    <enumeratedOptionValue
+			          command="-g1"
+			          id="com.telink.tc32eclipse.compiler.option.debug.level.g1"
+			          name="Minimal debugging info (-g1)" />
+			    <enumeratedOptionValue
+			          command="-g2"
+			          id="com.telink.tc32eclipse.compiler.option.debug.level.g2"
+			          isDefault="true"
+			          name="Standard debugging info (-g2)" />
+			    <enumeratedOptionValue
+			          command="-g3"
+			          id="com.telink.tc32eclipse.compiler.option.debug.level.g3"
+			          name="Extra debugging info (-g3)" />
+			</option>
+			<option id="com.telink.tc32eclipse.compiler.option.debug.type"
+				name="Debug Info Format" 
+				category="com.telink.tc32eclipse.compiler.category.debug"
+				valueType="enumerated" >
+			    <enumeratedOptionValue
+			          command=""
+			          id="com.telink.tc32eclipse.compiler.option.debug.level.default"
+			          name="Operating System Default" />
+				<enablement 
+					type="UI_ENABLEMENT|CMD_USAGE" >
+					<not>
+						<checkOption
+							optionId="com.telink.tc32eclipse.compiler.option.debug.level"
+					  		value="com.telink.tc32eclipse.compiler.option.debug.level.none" />
+					</not>
+				</enablement>
+			</option>
+			
+			<optionCategory
+				id="com.telink.tc32eclipse.compiler.category.optimization"
+				name="Optimization" />
+			<option id="com.telink.tc32eclipse.compiler.option.optimize"
+				name="Optimization Level"
+				category="com.telink.tc32eclipse.compiler.category.optimization"
+				valueType="enumerated" >
+				<enumeratedOptionValue command="-O0"
+					name="No Optimizations (-O0)"
+					id="com.telink.tc32eclipse.compiler.optimize.none" />
+				<enumeratedOptionValue command="-O1"
+					name="Slight Optimizations (-O1)"
+					id="com.telink.tc32eclipse.compiler.optimize.one" />
+				<enumeratedOptionValue command="-O2"
+					name="Moderate Optimizations (-O2)"
+					id="com.telink.tc32eclipse.compiler.optimize.two" />
+				<enumeratedOptionValue command="-O3"
+					name="Heavy Optimizations (-O3)"
+					id="com.telink.tc32eclipse.compiler.optimize.three" />
+				<enumeratedOptionValue command="-Os"
+					id="com.telink.tc32eclipse.compiler.optimize.size"
+					name="Size Optimizations (-Os)">
+				</enumeratedOptionValue>
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value" 
+					value="com.telink.tc32eclipse.compiler.optimize.three"
+					extensionAdjustment="false">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.release" />
+				</enablement>
+				<enablement 
+					type="CONTAINER_ATTRIBUTE"
+					attribute="value" 
+					value="com.telink.tc32eclipse.compiler.optimize.none"
+					extensionAdjustment="false">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildType"
+						value="org.eclipse.cdt.build.core.buildType.debug" />
+				</enablement>
+			</option>
+			<option id="com.telink.tc32eclipse.compiler.option.optimize.packstruct"
+				name="Pack structs (-fpack-struct)"
+				category="com.telink.tc32eclipse.compiler.category.optimization"
+				command="-fpack-struct"
+				valueType="boolean"
+				defaultValue="false" />
+			<option id="com.telink.tc32eclipse.compiler.option.optimize.shortenums"
+				name="Short enums (-fshort-enums)"
+				category="com.telink.tc32eclipse.compiler.category.optimization"
+				command="-fshort-enums"
+				valueType="boolean"
+				defaultValue="false" />
+			<option id="com.telink.tc32eclipse.compiler.option.optimize.other"
+				name="Other Optimization Flags"
+				category="com.telink.tc32eclipse.compiler.category.optimization"
+				valueType="string" />
+
+			
+			<optionCategory id="com.telink.tc32eclipse.compiler.category.language"
+				name="Language Standard" />
+			<option id="com.telink.tc32eclipse.compiler.option.std"
+				name="Language Standard"
+				category="com.telink.tc32eclipse.compiler.category.language"
+				valueType="enumerated" >
+				<enumeratedOptionValue command=""
+					id="com.telink.tc32eclipse.compiler.option.std.default"
+					name="Compiler Default (ISO C90 + GNU extensions)" />
+				<enumeratedOptionValue command="-ansi"
+					id="com.telink.tc32eclipse.compiler.option.std.c90"
+					name="ISO C90 (-ansi)" />
+				<enumeratedOptionValue command="-std=c99"
+					id="com.telink.tc32eclipse.compiler.option.std.c99"
+					name="ISO C99 (-std=c99)" />
+				<enumeratedOptionValue command="-std=gnu99"
+					id="com.telink.tc32eclipse.compiler.option.std.gnu99"
+					name="ISO C99 + GNU Extensions (-std=gnu99)"
+					isDefault="false" />
+			</option>
+			<option id="com.telink.tc32eclipse.compiler.option.language.uchar"
+				name="char is unsigned (-funsigned-char)"
+				category="com.telink.tc32eclipse.compiler.category.language"
+				command="-funsigned-char"
+				valueType="boolean"
+				defaultValue="false"	/>
+			<option id="com.telink.tc32eclipse.compiler.option.language.ubitfields"
+				name="bitfields are unsigned (-funsigned-bitfields)"
+				category="com.telink.tc32eclipse.compiler.category.language"
+				command="-funsigned-bitfields"
+				valueType="boolean"
+				defaultValue="false"	/>
+
+			<optionCategory id="com.telink.tc32eclipse.compiler.category.misc"
+				name="Miscellaneous" />
+			<option id="com.telink.tc32eclipse.compiler.option.verbose"
+				name="Verbose (-v)" 
+				category="com.telink.tc32eclipse.compiler.category.misc"
+				valueType="boolean" 
+				defaultValue="false"
+				command="-v" />
+			<option id="com.telink.tc32eclipse.compiler.option.otherflags"
+				name="Other flags"
+				category="com.telink.tc32eclipse.compiler.category.misc" 
+				valueType="string"
+				defaultValue="" />				
+			<inputType id="com.telink.tc32eclipse.compiler.TC32Win.input"
+				name="C Source Files"
+				sourceContentType="org.eclipse.cdt.core.cSource"
+				sources="c"
+				dependencyContentType="org.eclipse.cdt.core.cHeader"
+				dependencyExtensions="h"
+			 	languageId="org.eclipse.cdt.core.gcc" 
+				scannerConfigDiscoveryProfileId="com.telink.tc32eclipse.core.TC32GCCManagedMakePerProjectProfileC" />
+				
+			<outputType id="com.telink.tc32eclipse.compiler.TC32Win.output"
+				name="Object Files"
+				outputs="o" 
+				buildVariable="OBJS" />
+		</tool>
+
+
+<!-- 
+####################################################################################### 
+#    TC32 C Linker                                                                    # 
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.linker.TC32Win" 
+			name="TC32 C Linker"
+			command="tc32-elf-ld"
+			outputFlag="-T ../boot.link -o"
+			natureFilter="cnature"
+			errorParsers="org.eclipse.cdt.core.GLDErrorParser" >
+			
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildArtefactType">
+					<value id="com.telink.tc32eclipse.buildArtefactType.app" />
+				</property>
+			</supportedProperties>
+			
+			<envVarBuildPath 
+				pathType="buildpathLibrary"
+				variableList="LIBRARY_PATH" />
+			
+			<optionCategory id="com.telink.tc32eclipse.linker.category.general"
+				name="General" />
+			<option id="com.telink.tc32eclipse.linker.option.nosyms" 
+				name="Omit Symbols (-s)" 
+				category="com.telink.tc32eclipse.linker.category.general"
+				valueType="boolean" 
+				defaultValue="false" 
+				command="-s" />
+			<option id="com.telink.tc32eclipse.linker.option.otherlinkargs"
+				name="Other Arguments" 
+				category="com.telink.tc32eclipse.linker.category.general"
+				valueType="string" />
+			<optionCategory id="com.telink.tc32eclipse.linker.category.libs"
+				name="Libraries" />
+			<option id="com.telink.tc32eclipse.linker.option.libs"
+				name="Libraries (-l)"
+				category="com.telink.tc32eclipse.linker.category.libs" 
+				valueType="libs"
+				browseType="none" 
+				command="-l" />
+			<option id="com.telink.tc32eclipse.linker.option.libpath" 
+				name="Libraries Path (-L)" 
+				category="com.telink.tc32eclipse.linker.category.libs"
+				valueType="stringList" 
+				browseType="directory"
+				command="-L" />			
+			<optionCategory id="com.telink.tc32eclipse.linker.category.objs"
+				name="Objects" />
+			<option id="com.telink.tc32eclipse.linker.option.otherlink"
+				name="(-Xlinker) Options" 
+				category="com.telink.tc32eclipse.linker.category.objs"
+				valueType="stringList" 
+				command="-Xlinker" />
+			<option id="com.telink.tc32eclipse.linker.option.otherobjs"
+				name="Other Objects (*.o)" 
+				category="com.telink.tc32eclipse.linker.category.objs"
+				valueType="userObjs"
+				browseType="file" />
+							
+			<inputType id="com.telink.tc32eclipse.tool.linker.input" 
+				name="OBJ Files"
+				sourceContentType="org.eclipse.cdt.managedbuilder.core.compiledObjectFile"
+				sources="obj"
+				multipleOfType="true"
+				buildVariable="OBJS" >
+	            <additionalInput
+	            	paths="$(USER_OBJS)"
+	            	kind="additionalinputdependency">
+	            </additionalInput>
+	            <additionalInput
+	            	paths="$(LIBS)"
+	            	kind="additionalinput">
+	            </additionalInput>
+			</inputType>
+
+			<outputType id="com.telink.tc32eclipse.tool.linker.output" 
+				name="ELF Binary Files"
+				outputs="elf"
+				nameProvider="org.eclipse.cdt.managedbuilder.makegen.gnu.GnuLinkOutputNameProvider"
+				buildVariable="ELFS" />
+		</tool>
+
+
+<!-- 
+####################################################################################### 
+#    TC32Win Archiver                                                                  # 
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.archiver.TC32Win" 
+			name="TC32 Archiver" 
+			command="tc32-elf-ar" 
+			isAbstract="true">
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildArtefactType">
+					<value id="com.telink.tc32eclipse.buildArtefactType.staticLib" />
+				</property>
+			</supportedProperties>
+			
+			<optionCategory id="com.telink.tc32eclipse.archiver.category.general" 
+				name="General" />
+			<option id="com.telink.tc32eclipse.archiver.option.flags" 
+				name="Archiver flags" 
+				category="com.telink.tc32eclipse.archiver.category.general" 
+				valueType="string" 
+				defaultValue="-r" />
+				
+			<inputType id="com.telink.tc32eclipse.archiver.input" 
+				sourceContentType="org.eclipse.cdt.managedbuilder.core.compiledObjectFile" 
+				sources="o" 
+				multipleOfType="true" 
+				buildVariable="OBJS">
+				<additionalInput 
+					paths="$(LIBS)" 
+					kind="additionalinput" />
+			</inputType>
+			
+			<outputType id="com.telink.tc32eclipse.archiver.output" 
+				outputs="a" 
+				outputPrefix="lib"
+				primaryOutput="true"
+				nameProvider="org.eclipse.cdt.managedbuilder.makegen.gnu.GnuLinkOutputNameProvider" 
+				buildVariable="ARCHIVES" />
+		</tool>
+
+<!-- 
+####################################################################################### 
+#    TC32Win Generate Flash ROM image                                                  #
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win" 
+			name="TC32 Create Flash image"
+			isAbstract="true"
+			commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS} ${OUTPUT}"
+			command="tc32-elf-objcopy" 
+			announcement="Create Flash image (binary format)" >
+			
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildArtefactType">
+					<value id="com.telink.tc32eclipse.buildArtefactType.app" />
+				</property>
+			</supportedProperties>
+			
+			
+			<optionCategory id="com.telink.tc32eclipse.objcopy.flash.category.general"
+				name="General" />
+			<option id="com.telink.tc32eclipse.objcopy.option.flash.stdopts"
+				name="Options to create flash image"
+				category="com.telink.tc32eclipse.objcopy.flash.category.general"
+				valueType="string"
+				defaultValue="-O binary" />
+			<option id="com.telink.tc32eclipse.objcopy.option.flash.addopts"
+				name="Additional Options for objcopy"
+				category="com.telink.tc32eclipse.objcopy.flash.category.general"
+				valueType="string" />
+			<option id="com.telink.tc32eclipse.objcopy.flash.option.output"
+				name="Output Filename"
+				category="com.telink.tc32eclipse.objcopy.flash.category.general"
+				valueType="string"
+				value="${BuildArtifactFileBaseName}.bin"
+				defaultValue="${BuildArtifactFileBaseName}.bin"
+				tip="Name of the flash image." >
+				<enablement
+					type="CMD_USAGE" >
+					<false/>
+				</enablement>
+			</option>
+
+<!--  	
+	Using an option for the input filename is an ugly clutch, but the linker /archiver,
+	as final build target will not generate a build variable. 
+-->
+			<option id="com.telink.tc32eclipse.objcopy.flash.option.input"
+				name="Input File"
+				valueType="string"
+				value="${BuildArtifactFilePrefix}${BuildArtifactFileName}"
+				defaultValue="${BuildArtifactFilePrefix}${BuildArtifactFileName}" >
+			</option>
+			<inputType id="com.telink.tc32eclipse.tool.objcopy.flash.input"
+				primaryInput="false"
+				multipleOfType="true"
+				option="com.telink.tc32eclipse.objcopy.flash.option.input" />
+				
+			<outputType id="com.telink.tc32eclipse.tool.objcopy.flash.output"
+				name="Hex dump for flash rom"
+				option="com.telink.tc32eclipse.objcopy.flash.option.output"
+				buildVariable="FLASH_IMAGE" />
+		</tool>
+
+
+
+<!-- 
+####################################################################################### 
+#    TC32Win create Extended Listing                                                   # 
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.objdump.TC32Win" 
+			name="TC32 Create Extended Listing"
+			commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS} >${OUTPUT}"
+			command="tc32-elf-objdump" >
+
+			<supportedProperties>
+				<property id="com.telink.tc32eclipse.buildType">
+					<value id="com.telink.tc32eclipse.buildType.debug" />
+					<value id="com.telink.tc32eclipse.buildType.release" />
+				</property>
+			</supportedProperties>
+
+			<optionCategory id="com.telink.tc32eclipse.objdump.category.general"
+				name="General" />
+			<option id="com.telink.tc32eclipse.objdump.option.stdopts"
+				name="Options to create Extended Listing"
+				category="com.telink.tc32eclipse.objdump.category.general"
+				valueType="string"
+				defaultValue="-x -D -l -S" />
+			<option id="com.telink.tc32eclipse.objdump.option.addopts"
+				name="Additional Options for objdump"
+				category="com.telink.tc32eclipse.objdump.category.general"
+				valueType="string" />
+			<option id="com.telink.tc32eclipse.objdump.option.output"
+				name="Output Filename"
+				category="com.telink.tc32eclipse.objdump.category.general"
+				valueType="string"
+				value="${BuildArtifactFileBaseName}.lst"
+				defaultValue="${BuildArtifactFileBaseName}.lst"
+				tip="Name of the list file." >
+				<enablement
+					type="CMD_USAGE" >
+					<false/>
+				</enablement>
+			</option>
+							
+<!--  	
+	Using an option for the input filename is an ugly clutch, but the linker /archiver,
+	as final build target will not generate a build variable. 
+-->
+			<option id="com.telink.tc32eclipse.objdump.option.input"
+				name="Input File"
+				valueType="string"
+				value="${BuildArtifactFilePrefix}${BuildArtifactFileName}"
+				defaultValue="${BuildArtifactFilePrefix}${BuildArtifactFileName}" >
+			</option>
+
+			<inputType id="com.telink.tc32eclipse.tool.objdump.input"
+				primaryInput="false"
+				multipleOfType="true"
+				option="com.telink.tc32eclipse.objdump.option.input" />
+				
+			<outputType id="com.telink.tc32eclipse.tool.objdump.output"
+				option="com.telink.tc32eclipse.objdump.option.output"
+				primaryOutput="true"
+				buildVariable="LST" />
+		</tool>
+		
+<!-- 
+####################################################################################### 
+#    TC32Win display size of target                                                    # 
+####################################################################################### 
+-->
+		<tool id="com.telink.tc32eclipse.tool.size.TC32Win" 
+			name="Print Size"
+			command="tc32-elf-size" 
+			commandLinePattern="${COMMAND} ${FLAGS} ${INPUTS}" >
+
+			<supportedProperties>
+				<property id="org.eclipse.cdt.build.core.buildArtefactType">
+					<value id="com.telink.tc32eclipse.buildArtefactType.app" />
+					<value id="com.telink.tc32eclipse.buildArtefactType.staticLib" />
+				</property>
+			</supportedProperties>
+
+			<optionCategory id="com.telink.tc32eclipse.size.category.general"
+				name="General" />
+			<option id="com.telink.tc32eclipse.size.option.format"
+		        category="com.telink.tc32eclipse.size.category.general"
+		        name="Size Format"
+		        valueType="enumerated"
+		        applicabilityCalculator="com.telink.tc32eclipse.mbs.SizeFormatApplicabilityCalculator" >
+				<enumeratedOptionValue id="com.telink.tc32eclipse.size.option.format.berkeley"
+					name="Berkeley Format" 
+					command="--format=berkeley" />
+				<enumeratedOptionValue id="com.telink.tc32eclipse.size.option.format.sysv"
+					name="SysV Format" 
+					command="--format=sysv" />
+ 			</option>
+			<option id="com.telink.tc32eclipse.size.option.totals"
+				name="Show Totals"
+				category="com.telink.tc32eclipse.size.category.general"
+				valueType="boolean"
+				defaultValue="true"
+				command="-t" 
+				applicabilityCalculator="com.telink.tc32eclipse.mbs.SizeOptionsApplicabilityCalculator" >
+			</option>			
+			<option id="com.telink.tc32eclipse.size.option.hex"
+				name="Display as hex"
+				category="com.telink.tc32eclipse.size.category.general"
+				valueType="boolean"
+				defaultValue="false"
+				command="-x"
+				applicabilityCalculator="com.telink.tc32eclipse.mbs.SizeOptionsApplicabilityCalculator" >
+			</option>			
+
+			
+<!--  	
+	Using an option for the input filename is an ugly clutch, but the linker /archiver,
+	as final build target will not generate a build variable. 
+-->
+			<option id="com.telink.tc32eclipse.size.option.input"
+				name="Input File"
+				valueType="string"
+				value="${BuildArtifactFilePrefix}${BuildArtifactFileName}"
+				defaultValue="${BuildArtifactFilePrefix}${BuildArtifactFileName}" >
+			</option>
+
+			<inputType id="com.telink.tc32eclipse.tool.size.input"
+				primaryInput="false"
+				multipleOfType="true"
+				option="com.telink.tc32eclipse.size.option.input" />
+ 				
+			<outputType id="com.telink.tc32eclipse.tool.size.output"
+				outputNames="sizedummy"
+				primaryOutput="true" 
+				buildVariable="SIZEDUMMY"/>
+		</tool>
+		
+
+
+
+		
+<!-- 
+####################################################################################### 
+#    Default builder                                                                  # 
+####################################################################################### 
+-->
+		<builder id="com.telink.tc32eclipse.target.gnu.builder" 
+			name="GNU Make Builder"
+			isAbstract="true"
+			command="make"
+			autoBuildTarget="all"
+			incrementalBuildTarget="all" 
+			cleanBuildTarget="clean" 
+			ignoreErrCmd="-k"
+			buildfileGenerator="org.eclipse.cdt.managedbuilder.makegen.gnu.GnuMakefileGenerator"
+			errorParsers="org.eclipse.cdt.core.MakeErrorParser"
+			isVariableCaseSensitive="true"
+			macroInputDirRelPathValue="$(dir $&lt;)"
+			macroInputFileBaseNameValue="$(basename $(notdir $&lt;))"
+			macroInputFileExtValue="$(suffix $(notdir $&lt;))"
+			macroInputFileNameValue="$(notdir $&lt;)"
+			macroInputFileRelPathValue="$&lt;"
+			macroOutputDirRelPathValue="$(dir $@)"
+			macroOutputFileBaseNameValue="$(basename (notdir $@))"
+			macroOutputFileExtValue="$(suffix $(notdir $@)"
+			macroOutputFileNameValue="$(notdir $@)"
+			macroOutputFileRelPathValue="$@" 
+			parallelBuildCmd="-j*"
+			reservedMacroNames="ROOT,DEPS,OBJS,.*_SRCS,EXECUTABLES,SUBDIRS,LIBS,USER_OBJS,.*_INPUTS,.*_OUTPUTS"
+			variableFormat="${=}" 
+			/>
+
+<!-- 
+####################################################################################### 
+#    Default toolchain                                                                # 
+####################################################################################### 
+-->
+		<toolChain
+	        id="com.telink.tc32eclipse.toolchain.TC32Win.base"
+	        name="TC32-GCC Toolchain"
+	        configurationEnvironmentSupplier="com.telink.tc32eclipse.mbs.TC32TargetEnvvarSupplier"
+	        configurationMacroSupplier="com.telink.tc32eclipse.mbs.TC32TargetBuildMacroSupplier"
+	        scannerConfigDiscoveryProfileId="com.telink.tc32eclipse.core.TC32GCCManagedMakePerProjectProfileC">
+			
+  			<targetPlatform id="com.telink.tc32eclipse.targetplatform.TC32" 
+				name="TC32 Cross-Target"
+				archList="all"
+				osList="all" 
+				binaryParser="org.eclipse.cdt.core.ELF" />
+
+			<!-- ************************************************ -->
+			<!-- * The Toolchain Options for the extended tools * -->
+			<!-- ************************************************ -->
+			<optionCategory id="com.telink.tc32eclipse.toolchain.category.addtools"
+				name="Additional Tools in Toolchain"
+				owner="com.telink.tc32eclipse.toolchain.TC32Win.base" />
+			<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash"
+				name="Generate binary file for Flash memory"
+				category="com.telink.tc32eclipse.toolchain.category.addtools"
+				valueType="boolean" >
+				<enablement 
+					type="ALL">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildArtefactType"
+						value="com.telink.tc32eclipse.buildArtefactType.app" />
+				</enablement>
+			</option>
+			<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objdump"
+				name="Generate Extended Listing (Source + generated Assembler)"
+				category="com.telink.tc32eclipse.toolchain.category.addtools"
+				valueType="boolean" >
+			</option>
+			<option id="com.telink.tc32eclipse.toolchain.options.toolchain.size"
+				name="Print Size"
+				category="com.telink.tc32eclipse.toolchain.category.addtools"
+				valueType="boolean"
+				tip="Prints the size of the final target" >
+			</option>
+ 	
+ 			
+			<!-- ************************************************ -->
+			<!-- * The Builder for the base Toolchain           * -->
+			<!-- ************************************************ -->
+			<builder superClass="com.telink.tc32eclipse.target.gnu.builder"
+				id="com.telink.tc32eclipse.target.builder.TC32Win.base" />
+
+			<!-- ************************************************ -->
+			<!-- * All Tools of the base Toolchain              * -->
+			<!-- ************************************************ -->
+			<tool id="com.telink.tc32eclipse.tool.assembler.TC32Win.base"
+				superClass="com.telink.tc32eclipse.tool.assembler.TC32Win" />
+			<tool id="com.telink.tc32eclipse.tool.compiler.TC32Win.base"
+				superClass="com.telink.tc32eclipse.tool.compiler.TC32Win" />
+			<tool id="com.telink.tc32eclipse.tool.linker.TC32Win.base"
+				superClass="com.telink.tc32eclipse.tool.linker.TC32Win">
+				<enablement type="ALL">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildArtefactType"
+						value="com.telink.tc32eclipse.buildArtefactType.app" />
+				</enablement>
+			</tool>	
+			<tool id="com.telink.tc32eclipse.tool.archiver.TC32Win.base"
+				superClass="com.telink.tc32eclipse.tool.archiver.TC32Win">
+				<enablement type="ALL">
+					<checkBuildProperty
+						property="org.eclipse.cdt.build.core.buildArtefactType"
+						value="com.telink.tc32eclipse.buildArtefactType.staticLib" />
+				</enablement>
+			</tool>
+
+		</toolChain>
+
+<!-- 
+####################################################################################### 
+#    Default configuration                                                            # 
+####################################################################################### 
+-->
+		<configuration id="com.telink.tc32eclipse.config.TC32Win.base"
+			artifactExtension="elf" 
+			cleanCommand="rm -rf" >
+			<enablement type="CONTAINER_ATTRIBUTE"
+				attribute="artifactExtension" value="a"
+				extensionAdjustment="false">
+				<checkBuildProperty
+					property="org.eclipse.cdt.build.core.buildArtefactType"
+					value="com.telink.tc32eclipse.buildArtefactType.staticLib" />
+			</enablement>
+		</configuration>
+
+<!-- 
+####################################################################################### 
+#    Application project                                                              # 
+####################################################################################### 
+-->
+		<projectType id="com.telink.tc32eclipse.project.TC32Win.elf"
+			convertToId="com.telink.tc32eclipse.project.TC32Win.elf_0.1.0"/>
+
+		<projectType id="com.telink.tc32eclipse.project.TC32Win.elf_0.1.0"
+			buildArtefactType="com.telink.tc32eclipse.buildArtefactType.app">
+
+			<configuration id="com.telink.tc32eclipse.configuration.app.debug"
+				name="Debug"
+				parent="com.telink.tc32eclipse.config.TC32Win.base"
+				buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" >
+				<toolChain id="com.telink.tc32eclipse.toolchain.TC32Win.app.debug"
+					superClass="com.telink.tc32eclipse.toolchain.TC32Win.base" 
+					secondaryOutputs="com.telink.tc32eclipse.tool.objdump.output;com.telink.tc32eclipse.tool.objcopy.flash.output;com.telink.tc32eclipse.tool.size.output;" > 
+
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash.app.debug"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.app.debug"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objdump" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.size.app.debug"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.size" /> 
+
+					<targetPlatform
+						id="com.telink.tc32eclipse.targetplatform.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.targetplatform.TC32" />
+					<builder
+						id="com.telink.tc32eclipse.target.builder.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.target.builder.TC32Win.base" />
+
+					<tool
+						id="com.telink.tc32eclipse.tool.assembler.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.assembler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.compiler.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.compiler.TC32Win.base" />
+					<tool 
+						id="com.telink.tc32eclipse.tool.linker.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.linker.TC32Win.base" />
+					<tool 
+						id="com.telink.tc32eclipse.tool.objdump.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.objdump.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.app.debug"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.debug"
+								value="true" />
+						</enablement>
+					</tool>
+					<tool
+						id="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash.app.debug"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.debug"
+								value="true" />
+						</enablement>
+					</tool>
+
+					<tool 
+						id="com.telink.tc32eclipse.tool.size.TC32Win.app.debug"
+						superClass="com.telink.tc32eclipse.tool.size.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.size.app.debug"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.debug"
+								value="true" />
+						</enablement>
+					</tool>
+				</toolChain>
+			</configuration>
+
+			<configuration id="com.telink.tc32eclipse.configuration.app.release" 
+				name="Release"
+				parent="com.telink.tc32eclipse.config.TC32Win.base"
+				buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release">
+				<toolChain id="com.telink.tc32eclipse.toolchain.TC32Win.app.release"
+					superClass="com.telink.tc32eclipse.toolchain.TC32Win.base" 
+					secondaryOutputs="com.telink.tc32eclipse.tool.objdump.output;com.telink.tc32eclipse.tool.objcopy.flash.output;com.telink.tc32eclipse.tool.size.output;" > 
+
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash.app.release"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.app.release"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objdump" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.size.app.release"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.size" /> 
+
+					<targetPlatform
+						id="com.telink.tc32eclipse.targetplatform.TC32Win.app.release "
+						superClass="com.telink.tc32eclipse.targetplatform.TC32" />
+					<builder
+						id="com.telink.tc32eclipse.target.builder.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.target.builder.TC32Win.base" />
+
+					<tool
+						id="com.telink.tc32eclipse.tool.assembler.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.assembler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.compiler.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.compiler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.linker.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.linker.TC32Win.base" />
+					<tool 
+						id="com.telink.tc32eclipse.tool.objdump.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.objdump.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.app.release"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.release"
+								value="true" />
+						</enablement>
+					</tool>
+					<tool
+						id="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objcopy.flash.app.release"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.release"
+								value="true" />
+						</enablement>
+					</tool>
+					<tool 
+						id="com.telink.tc32eclipse.tool.size.TC32Win.app.release"
+						superClass="com.telink.tc32eclipse.tool.size.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.size.app.release"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.app.release"
+								value="true" />
+						</enablement>
+					</tool>
+				</toolChain>
+			</configuration>
+		</projectType>
+
+<!-- 
+####################################################################################### 
+#    Static library project                                                           # 
+####################################################################################### 
+-->
+		<projectType id="com.telink.tc32eclipse.project.TC32Win.staticlib"
+			buildArtefactType="com.telink.tc32eclipse.buildArtefactType.staticLib">
+			
+			<configuration id="com.telink.tc32eclipse.configuration.lib.debug"
+				name="Debug"
+				parent="com.telink.tc32eclipse.config.TC32Win.base"
+				artifactExtension="a" 
+				cleanCommand="rm -f"
+				buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug">
+				<toolChain id="com.telink.tc32eclipse.toolchain.TC32Win.lib.debug"
+					superClass="com.telink.tc32eclipse.toolchain.TC32Win.base" 
+					secondaryOutputs="com.telink.tc32eclipse.tool.objdump.output;com.telink.tc32eclipse.tool.size.output" > 
+
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.lib.debug"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objdump" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.size.lib.debug"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.size" /> 
+
+					<targetPlatform
+						id="com.telink.tc32eclipse.targetplatform.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.targetplatform.TC32" />
+					<builder
+						id="com.telink.tc32eclipse.target.builder.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.target.builder.TC32Win.base" />
+
+					<tool
+						id="com.telink.tc32eclipse.tool.assembler.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.tool.assembler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.compiler.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.tool.compiler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.archiver.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.tool.archiver.TC32Win.base" />
+					<tool 
+						id="com.telink.tc32eclipse.tool.objdump.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.tool.objdump.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.lib.debug"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.lib.debug"
+								value="true" />
+						</enablement>
+					</tool>
+					<tool 
+						id="com.telink.tc32eclipse.tool.size.TC32Win.lib.debug"
+						superClass="com.telink.tc32eclipse.tool.size.TC32Win" >
+						<option id="com.telink.tc32eclipse.size.option.format.lib.debug"
+							superClass="com.telink.tc32eclipse.size.option.format"
+							value="com.telink.tc32eclipse.size.option.format.berkeley" />
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.size.lib.debug"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.lib.debug"
+								value="true" />
+						</enablement>
+
+					</tool>
+						
+				</toolChain>
+			</configuration>
+
+			<configuration id="com.telink.tc32eclipse.configuration.lib.release" 
+				name="Release"
+				parent="com.telink.tc32eclipse.config.TC32Win.base"
+				artifactExtension="a" 
+				cleanCommand="rm -rf"
+				buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release">
+				<toolChain id="com.telink.tc32eclipse.toolchain.TC32Win.lib.release"
+					superClass="com.telink.tc32eclipse.toolchain.TC32Win.base" 
+					secondaryOutputs="com.telink.tc32eclipse.tool.objdump.output;com.telink.tc32eclipse.tool.size.output" > 
+
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.lib.release"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.objdump" /> 
+					<option id="com.telink.tc32eclipse.toolchain.options.toolchain.size.lib.release"
+						defaultValue="true"
+						superClass="com.telink.tc32eclipse.toolchain.options.toolchain.size" /> 
+
+					<targetPlatform
+						id="com.telink.tc32eclipse.targetplatform.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.targetplatform.TC32" />
+					<builder
+						id="com.telink.tc32eclipse.target.builder.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.target.builder.TC32Win.base" />
+
+					<tool
+						id="com.telink.tc32eclipse.tool.assembler.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.tool.assembler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.compiler.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.tool.compiler.TC32Win.base" />
+					<tool
+						id="com.telink.tc32eclipse.tool.archiver.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.tool.archiver.TC32Win.base" />
+					<tool 
+						id="com.telink.tc32eclipse.tool.objdump.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.tool.objdump.TC32Win" >
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.objdump.lib.release"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.lib.release"
+								value="true" />
+						</enablement>
+					</tool>
+					<tool 
+						id="com.telink.tc32eclipse.tool.size.TC32Win.lib.release"
+						superClass="com.telink.tc32eclipse.tool.size.TC32Win" >
+						<option id="com.telink.tc32eclipse.size.option.format.lib.release"
+							superClass="com.telink.tc32eclipse.size.option.format"
+							value="com.telink.tc32eclipse.size.option.format.berkeley" />
+						<enablement type="ALL">
+							<checkOption
+								optionId="com.telink.tc32eclipse.toolchain.options.toolchain.size.lib.release"
+								holderId="com.telink.tc32eclipse.toolchain.TC32Win.lib.release"
+								value="true" />
+						</enablement>
+
+					</tool>
+				</toolChain>
+			</configuration>
+		</projectType>
+	</extension>
+
+	<extension point="org.eclipse.cdt.managedbuilder.core.buildProperties"
+		id="com.telink.tc32eclipse.baseproperties"
+		name="TC32 Cross Target Base Build Properties Definition">
+		
+		<propertyValue
+			property="org.eclipse.cdt.build.core.buildArtefactType"
+			id="com.telink.tc32eclipse.buildArtefactType.app"
+			name="TC32 Cross Target Application" />
+		<propertyValue
+			property="org.eclipse.cdt.build.core.buildArtefactType"
+			id="com.telink.tc32eclipse.buildArtefactType.staticLib"
+			name="TC32 Cross Target Static Library" />
+	</extension>
+
+
+	<extension point="org.eclipse.cdt.managedbuilder.core.projectConverter">
+	    <converter name="Update to TC32 Eclipse"
+	    	id="com.telink.tc32eclipse.converter.update"
+			fromId="com.telink.tc32eclipse.project.TC32Win.elf"
+	        toId="com.telink.tc32eclipse.project.TC32Win.elf_0.1.0" 
+	        class="com.telink.tc32eclipse.mbs.converter.ProjectUpdateConverter"
+	        mbsVersion="4.0.0">
+	    </converter>
+	    <converter name="Update to TC32 Eclipse"
+	    	id="com.telink.tc32eclipse.converter.update"
+			fromId="com.telink.tc32eclipse.project.TC32Win.staticlib"
+	        toId="com.telink.tc32eclipse.project.TC32Win.staticlib_0.1.0" 
+	        class="com.telink.tc32eclipse.mbs.converter.ProjectUpdateConverter"
+	        mbsVersion="4.0.0">
+	    </converter>
+	</extension>
+
+
+</plugin>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.3"?>
+<plugin>
+   <extension-point id="targetToolFactories" name="targetToolFactories" schema="schema/targetToolFactories.exsd"/>
+
+<!-- 
+####################################################################################### 
+#    Extension Points                                                                 # 
+####################################################################################### 
+-->
+
+
+
+
+
+<!-- 
+####################################################################################### 
+#    TC32 Nature                                                                       # 
+####################################################################################### 
+-->
+ 	<extension id="TC32nature" name="TC32nature" point="org.eclipse.core.resources.natures">
+       <runtime>
+           <run class="com.telink.tc32eclipse.core.natures.TC32ProjectNature" />
+       </runtime>
+       <requires-nature id="org.eclipse.cdt.core.cnature"/>
+   </extension>
+
+<!-- 
+####################################################################################### 
+#    Content Types                                                                    # 
+####################################################################################### 
+-->
+	<extension
+		point="org.eclipse.core.contenttype.contentTypes">
+		<content-type id="com.telink.tc32eclipse.contenttype.hexdump.flash"
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="hex"
+			name="HEX Dump for Flash ROM">
+		</content-type>
+	</extension>
+	<!--  this does not work because Eclipse is non-case-sensitive, e.g. .s == .S -->
+	<extension point="org.eclipse.core.contenttype.contentTypes"> 
+		<file-association 
+	    	content-type="org.eclipse.cdt.core.asmSource"
+	       	file-extensions="s,S,asm"/>
+	</extension> 
+
+<!--
+####################################################################################### 
+#    Preference Initializer                                                           # 
+####################################################################################### 
+-->
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="com.telink.tc32eclipse.core.preferences.PreferenceInitializer">
+		</initializer>
+	</extension>
+</plugin>
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.telink.tc32eclipse.all_1.0.3.8.jar" id="com.telink.tc32eclipse.all" version="1.0.3.8">
+      <category name="new_category_1"/>
+   </feature>
+   <category-def name="new_category_1" label="Your Category">
+      <description>
+         Your Category description
+      </description>
+   </category-def>
+</site>

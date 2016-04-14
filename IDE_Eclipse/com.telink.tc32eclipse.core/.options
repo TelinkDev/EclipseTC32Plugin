@@ -1,0 +1,4 @@
+com.telink.tc32eclipse.core/debug = true
+com.telink.tc32eclipse.core/debug/ui = true
+com.telink.tc32eclipse.core/debug/managedbuild = true
+com.telink.tc32eclipse.core/debug/core = true

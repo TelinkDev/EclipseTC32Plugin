@@ -1,0 +1,85 @@
+<project name="Build specific targets and properties"  >
+<macrodef name="pde-version">
+		    <!-- location of the eclipse distribution -->
+		    <attribute name="pdeLocation" />
+
+		    <!-- prefix to use for the property names -->
+		    <attribute name="propertyPrefix" default="" />
+
+		    <sequential>
+
+		        <!-- find equinox launcher jar -->
+		        <path id="equinox.launcher.file.id">
+		            <fileset dir="@{pdeLocation}">
+		                <include name="plugins/org.eclipse.equinox.launcher_*.jar" />
+		            </fileset>
+		        </path>
+		        <property name="equinox.launcher.file" refid="equinox.launcher.file.id" />
+
+		        <!-- fail if no launcher found -->
+		        <condition property="no.launcher.found">
+		            <equals arg1="${equinox.launcher.file}" arg2="" trim="true"/>
+		        </condition>
+		        <fail if="no.launcher.found" message="no equinox launcher found at '@{pdeLocation}/plugins'" />
+		        <echo message="equinox launcher found at '${equinox.launcher.file}'" />
+
+		        <!-- find pde build plugin dir -->
+		        <path id="pde.build.dir.id">
+		            <dirset dir="@{pdeLocation}">
+		                <include name="plugins/org.eclipse.pde.build_*" />
+		            </dirset>
+		        </path>
+		        <property name="pde.build.dir" refid="pde.build.dir.id" />
+
+		        <!-- fail if pde build plugin dir found -->
+		        <condition property="no.pde.build.dir">
+		            <equals arg1="${pde.build.dir}" arg2="" trim="true"/>
+		        </condition>
+		        <fail if="no.pde.build.dir" message="no pde build plugin dir found at '@{pdeLocation}/plugins'" />
+		        <echo message="pde build plugin dir found at '${pde.build.dir}'" />
+		        
+
+		        <!-- write to property file and use regex to extract launcher version -->
+		        <delete file="${java.io.tmpdir}/pde_version.helper" />
+		        <propertyfile file="${java.io.tmpdir}/pde_version.helper">
+		            <entry key="equinox.launcher.version" value="${equinox.launcher.file}" />
+		        </propertyfile>
+		        
+		        <replaceregexp byline="true">
+		            <regexp pattern="equinox.launcher.version=.*org.eclipse.equinox.launcher_(.*).jar" />
+		            <substitution expression="@{propertyPrefix}equinox.launcher.version=\1" />
+		            <fileset dir="${java.io.tmpdir}">
+		                <include name="pde_version.helper" />
+		            </fileset>
+		        </replaceregexp>
+
+		        <!-- read back propertyfile -->
+		        <property file="${java.io.tmpdir}/pde_version.helper" />
+
+		        <!-- write to property file and use regex to extract build plugin version -->
+		        <delete file="${java.io.tmpdir}/pde_version.helper" />
+		        <propertyfile file="${java.io.tmpdir}/pde_version.helper">
+		            <entry key="pde.build.version" value="${pde.build.dir}" />
+		        </propertyfile>
+		        
+		        <replaceregexp byline="true">
+		            <regexp pattern="pde.build.version=.*org.eclipse.pde.build_(.*)" />
+		            <substitution expression="@{propertyPrefix}pde.build.version=\1" />
+		            <fileset dir="${java.io.tmpdir}">
+		                <include name="pde_version.helper" />
+		            </fileset>
+		        </replaceregexp>
+
+		        <!-- read back propertyfile -->
+		        <property file="${java.io.tmpdir}/pde_version.helper" />
+
+		        <delete file="${java.io.tmpdir}/pde_version.helper" />
+		        
+		    </sequential>
+		</macrodef>
+	
+	
+	<pde-version pdeLocation="${eclipseDir}" />
+	<echo>equinox.launcher.version=${equinox.launcher.version}</echo>
+	<echo>pde.build.version=${pde.build.version}</echo>
+</project>

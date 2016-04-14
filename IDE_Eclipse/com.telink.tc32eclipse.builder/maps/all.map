@@ -1,0 +1,4 @@
+feature@com.telink.tc32eclipse.all=COPY,E:/peter_works/Eclipse_src_v1/tc32eclipse,com.telink.tc32eclipse.all.feature
+plugin@com.telink.tc32eclipse.ui=COPY,E:/peter_works/Eclipse_src_v1/tc32eclipse,com.telink.tc32eclipse.ui
+plugin@com.telink.tc32eclipse.core.managedbuildsystem=COPY,E:/peter_works/Eclipse_src_v1/tc32eclipse,com.telink.tc32eclipse.core.managedbuildsystem
+plugin@com.telink.tc32eclipse.core=COPY,E:/peter_works/Eclipse_src_v1/tc32eclipse,com.telink.tc32eclipse.core
